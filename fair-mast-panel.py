@@ -17,7 +17,6 @@ from textwrap import dedent
 import holoviews as hv
 import hvplot.xarray  # noqa -- enable hvplot accessors for xarray Datasets
 import panel as pn
-import s3fs
 import xarray as xr
 import zarr
 
@@ -32,8 +31,17 @@ URL = "https://mastapp.site"
 endpoint_url = "https://s3.echo.stfc.ac.uk"
 url = "s3://mast/level2/shots/30421.zarr"
 
-fs = s3fs.S3FileSystem(anon=True, endpoint_url=endpoint_url)
-store = zarr.storage.FSStore(fs=fs, url=url)
+store = zarr.storage.FsspecStore.from_url(
+    url,
+    storage_options=dict(
+        protocol='filecache',
+        target_protocol="s3",
+        cache_storage='.cache',
+        target_options=dict(
+            anon=True, endpoint_url=endpoint_url, asynchronous=True
+        )
+    )
+)
 zds = zarr.open(store)
 groups = list(zds.group_keys())
 print(f"Loading dataset groups took {time.time()-t0:.3f} seconds")
