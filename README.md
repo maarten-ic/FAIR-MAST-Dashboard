@@ -13,7 +13,7 @@ cd FAIR-MAST-Dashboard
 ```bash
 python -m venv venv
 . venv/bin/activate
-pip install s3fs 'zarr < 3' panel watchfiles holoviews hvplot xarray
+pip install holoviews hvplot panel s3fs watchfiles xarray zarr
 ```
 3. Start a Panel server to view the dashboard (use Ctrl+C to shut down the application)
 ```bash
